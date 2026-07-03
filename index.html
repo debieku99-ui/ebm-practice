@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>實證醫學練習室｜藥學實習生互動練習</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#14213D;
+    --navy-light:#1E2E52;
+    --white:#FFFFFF;
+    --pink-bg:#FCE9E9;
+    --pink-text:#A94442;
+    --blue:#2E75B6;
+    --blue-bg:#DCEBFB;
+    --green:#1E8449;
+    --green-bg:#E6F4EA;
+    --red:#B03A2E;
+    --red-bg:#FBE0DF;
+    --orange:#C9791F;
+    --orange-bg:#FBE7CF;
+    --gray-bg:#F7F8FA;
+    --border:#E3E5E9;
+    --muted:#6B7280;
+    --body:#3F3F3F;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+    color:var(--body); background:var(--white); line-height:1.65;
+  }
+  .hero{
+    background:linear-gradient(134deg,var(--navy) 0%,var(--navy-light) 100%);
+    color:var(--white); padding:52px 24px 40px; text-align:left;
+  }
+  .hero-inner{max-width:920px;margin:0 auto;}
+  .hero h1{font-size:32px;margin:0 0 8px;font-weight:900;}
+  .hero p{font-size:15px;color:#AEB8CC;margin:0 0 18px;}
+  .hero .badge{
+    display:inline-block;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.25);
+    color:#CBD5E8;font-size:12.5px;padding:5px 14px;border-radius:999px;
+  }
+  .navbar{
+    position:sticky; top:0; z-index:50; background:var(--white);
+    border-bottom:1px solid var(--border); box-shadow:0 2px 8px rgba(20,33,61,0.06);
+  }
+  .navbar-inner{
+    max-width:920px;margin:0 auto;padding:10px 24px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;
+  }
+  .navbar a{
+    text-decoration:none;font-size:13px;font-weight:700;color:var(--navy);
+    background:var(--gray-bg);border:1px solid var(--border);padding:7px 14px;border-radius:999px;
+    white-space:nowrap; transition:all .15s;
+  }
+  .navbar a:hover{background:var(--blue-bg);border-color:var(--blue);color:var(--blue);}
+  .score-pill{
+    margin-left:auto; font-size:13px; font-weight:700; color:var(--navy);
+    background:var(--pink-bg); border:1px solid #F3D4D4; padding:7px 16px; border-radius:999px;
+  }
+  .wrap{max-width:920px;margin:0 auto;padding:0 24px;}
+  .section{padding:44px 0 12px; border-bottom:1px solid var(--border);}
+  .section:last-of-type{border-bottom:none;}
+  .section-head{
+    background:var(--navy); color:var(--white); border-radius:10px;
+    padding:16px 22px; display:flex; align-items:center; justify-content:space-between; margin-bottom:18px;
+  }
+  .section-head h2{margin:0;font-size:20px;font-weight:900;}
+  .section-head .tag{font-size:11.5px;color:#AEB8CC;font-weight:500;}
+  .section-desc{color:var(--muted);font-size:14px;margin:0 0 20px;}
+  .case-card{
+    background:var(--gray-bg); border:1px solid var(--border); border-radius:12px;
+    padding:22px; margin-bottom:26px;
+  }
+  .case-card h3{margin:0 0 10px;font-size:16.5px;color:var(--navy);}
+  .scenario-box{
+    background:var(--blue-bg); border:1px solid #CFE0F2; border-radius:8px;
+    padding:14px 16px; font-size:14px; color:#1E3A5F; margin-bottom:18px;
+  }
+  .pico-subq{margin-bottom:18px;}
+  .pico-subq .tag-badge{
+    display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px;
+    border-radius:50%; color:var(--white); font-size:11.5px; font-weight:700; margin-right:8px; flex-shrink:0;
+  }
+  .pico-subq .subq-head{display:flex; align-items:center; margin-bottom:8px;}
+  .pico-subq .subq-text{font-size:13.5px; font-weight:700; color:var(--navy);}
+  .kw-locked{
+    text-align:center; padding:22px; color:var(--muted); font-size:13px;
+    background:var(--gray-bg); border:1px dashed var(--border); border-radius:8px; margin-top:14px;
+  }
+  .mc-block{margin-top:18px;}
+  .mc-q{font-size:13.5px; font-weight:700; color:var(--navy); margin-bottom:8px;}
+  .mc-options{display:flex; flex-wrap:wrap; gap:8px;}
+  .mc-opt{
+    font-size:13px; padding:8px 14px; border-radius:999px; border:1px solid var(--border);
+    background:var(--white); cursor:pointer; font-family:inherit; color:var(--body); transition:all .12s;
+  }
+  .mc-opt:hover{border-color:var(--blue);}
+  .mc-opt.correct{background:var(--green-bg); border-color:var(--green); color:var(--green); font-weight:700;}
+  .mc-opt.wrong{background:var(--red-bg); border-color:var(--red); color:var(--red); font-weight:700;}
+  .mc-opt.disabled{cursor:default;}
+  .mc-explain{
+    margin-top:10px; font-size:12.5px; color:var(--muted); background:var(--white);
+    border-left:3px solid var(--blue); padding:8px 12px; border-radius:0 6px 6px 0; display:none;
+  }
+  .mc-explain.show{display:block;}
+  .q-card{
+    background:var(--gray-bg); border:1px solid var(--border); border-radius:12px;
+    padding:18px 20px; margin-bottom:14px;
+  }
+  .q-card .q-title{font-size:14.5px; font-weight:700; color:var(--navy); margin-bottom:12px;}
+  .q-num{
+    display:inline-flex; align-items:center; justify-content:center; width:22px;height:22px;
+    background:var(--navy); color:var(--white); border-radius:50%; font-size:11.5px; margin-right:8px;
+  }
+  .pyramid-wrap{background:var(--gray-bg); border:1px solid var(--border); border-radius:12px; padding:20px;}
+  .pyramid-item{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    background:var(--white); border:1px solid var(--border); border-radius:8px;
+    padding:11px 14px; margin-bottom:8px; font-size:13.5px; font-weight:700; color:var(--navy);
+    transition:all .2s;
+  }
+  .pyramid-item .rank{
+    display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px;
+    background:var(--blue-bg); color:var(--blue); border-radius:6px; font-size:12px; margin-right:10px; flex-shrink:0;
+  }
+  .pyramid-item .label-wrap{display:flex; align-items:center; flex:1;}
+  .pyramid-item.correct{background:var(--green-bg); border-color:var(--green);}
+  .pyramid-item.wrong{background:var(--red-bg); border-color:var(--red);}
+  .pyramid-btns button{
+    border:1px solid var(--border); background:var(--white); border-radius:6px; width:26px; height:26px;
+    cursor:pointer; font-size:12px; color:var(--navy);
+  }
+  .pyramid-btns button:hover{background:var(--blue-bg); border-color:var(--blue);}
+  .btn{
+    font-family:inherit; font-size:13.5px; font-weight:700; color:var(--white); background:var(--blue);
+    border:none; border-radius:8px; padding:10px 22px; cursor:pointer; margin-top:14px; margin-right:10px;
+  }
+  .btn:hover{background:#255d92;}
+  .btn.secondary{background:var(--white); color:var(--navy); border:1px solid var(--border);}
+  .btn.secondary:hover{border-color:var(--navy);}
+  .callout{
+    background:var(--pink-bg); border:1px solid #F3D4D4; border-radius:8px; padding:12px 16px;
+    font-size:13px; color:var(--pink-text); font-weight:700; margin-top:16px;
+  }
+  .demo-card{
+    background:var(--navy); color:var(--white); border-radius:12px; padding:22px; margin-bottom:26px;
+  }
+  .demo-card h3{margin:0 0 4px;font-size:16.5px;color:var(--white);}
+  .demo-card .demo-tag{font-size:11.5px;color:#AEB8CC;margin-bottom:14px;display:block;}
+  .demo-scenario{
+    background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); border-radius:8px;
+    padding:12px 14px; font-size:13px; color:#D7DEEC; margin-bottom:16px;
+  }
+  .demo-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:14px;}
+  @media(max-width:640px){.demo-grid{grid-template-columns:1fr 1fr;}}
+  .demo-field{background:rgba(255,255,255,0.06); border-radius:8px; padding:10px 12px;}
+  .demo-field .k{font-size:11px;font-weight:700;color:#8FB3E0;margin-bottom:4px;}
+  .demo-field .v{font-size:12.5px;color:var(--white);}
+  .keyword-box{
+    background:var(--white); border:1px solid var(--border); border-radius:8px; padding:14px 16px; margin-top:14px;
+  }
+  .keyword-box .kw-title{font-size:12.5px; font-weight:700; color:var(--navy); margin-bottom:10px;}
+  .kw-row{display:flex; gap:10px; font-size:12.5px; padding:5px 0; border-bottom:1px dashed var(--border); align-items:baseline;}
+  .kw-row:last-of-type{border-bottom:none;}
+  .kw-row .kw-tag{flex:0 0 100px; font-weight:700; color:var(--muted);}
+  .kw-row .kw-nat{flex:1; color:var(--body);}
+  .kw-row .kw-mesh{flex:1.4; color:var(--green); font-family:Consolas,Menlo,monospace; font-size:11.5px;}
+  .kw-strategy{
+    margin-top:10px; background:var(--gray-bg); border-radius:6px; padding:9px 12px;
+    font-family:Consolas,Menlo,monospace; font-size:11px; color:var(--navy); word-break:break-all; line-height:1.6;
+  }
+  .kw-note{font-size:11.5px; color:var(--muted); margin-top:8px; font-style:italic;}
+  .footer{
+    background:var(--navy); color:#AEB8CC; text-align:center; padding:34px 24px; margin-top:40px; font-size:12.5px;
+  }
+  .final-score{
+    max-width:920px; margin:0 auto; padding:40px 24px; text-align:center;
+  }
+  .final-score .num{font-size:56px; font-weight:900; color:var(--navy);}
+  .progress-track{
+    width:100%; height:8px; background:var(--gray-bg); border-radius:999px; overflow:hidden; margin-top:14px;
+  }
+  .progress-fill{height:100%; background:var(--blue); width:0%; transition:width .3s;}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <span class="badge">台南市立醫院藥劑科 顧宜佳藥師　實證醫學課程</span>
+    <h1 style="margin-top:14px;">實證醫學練習室</h1>
+    <p>藥學實習生綜合練習：PICO 拆解・MeSH 與自然語言・布林邏輯・研究設計配對・證據金字塔排序</p>
+  </div>
+</div>
+
+<div class="navbar">
+  <div class="navbar-inner">
+    <a href="#s1">① PICO 拆解</a>
+    <a href="#s2">② MeSH vs 自然語言</a>
+    <a href="#s3">③ 布林邏輯</a>
+    <a href="#s4">④ 研究設計配對</a>
+    <a href="#s5">⑤ 證據金字塔排序</a>
+    <span class="score-pill">總分　<span id="scoreNow">0</span> / <span id="scoreMax">34</span></span>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- SECTION 1: PICO -->
+  <section class="section" id="s1">
+    <div class="section-head">
+      <h2>① PICO 拆解練習</h2>
+      <span class="tag">延伸練習｜對應簡報案例二、案例三</span>
+    </div>
+    <p class="section-desc">每個案例都是選擇題：先選出 P／I／C／O，再選出問題類型與最適合的研究設計，共 6 小題、逐題計分。全部答完後，會解鎖「轉換為搜尋關鍵字」參考區塊。下方先附上簡報案例一的完整示範，作為正確寫法的參考模板。</p>
+    <div id="picoDemo"></div>
+    <div id="picoContainer"></div>
+  </section>
+
+  <!-- SECTION 2: MeSH -->
+  <section class="section" id="s2">
+    <div class="section-head">
+      <h2>② MeSH 與自然語言搜尋</h2>
+      <span class="tag">4 題選擇題</span>
+    </div>
+    <p class="section-desc">複習控制詞彙（MeSH）概念，判斷各情境該用什麼搜尋技巧。</p>
+    <div id="meshContainer"></div>
+  </section>
+
+  <!-- SECTION 3: Boolean -->
+  <section class="section" id="s3">
+    <div class="section-head">
+      <h2>③ 布林邏輯與檢索策略</h2>
+      <span class="tag">6 題選擇題</span>
+    </div>
+    <p class="section-desc">AND／OR／NOT／萬用符號的實務應用練習。</p>
+    <div id="boolContainer"></div>
+  </section>
+
+  <!-- SECTION 4: Study design matching -->
+  <section class="section" id="s4">
+    <div class="section-head">
+      <h2>④ 研究設計配對</h2>
+      <span class="tag">6 題情境配對</span>
+    </div>
+    <p class="section-desc">閱讀研究情境，判斷最符合的研究設計類型（RCT／世代研究／病例對照研究／SR-MA）。</p>
+    <div id="designContainer"></div>
+  </section>
+
+  <!-- SECTION 5: Pyramid ranking -->
+  <section class="section" id="s5">
+    <div class="section-head">
+      <h2>⑤ 證據金字塔排序</h2>
+      <span class="tag">由高到低排列證據等級</span>
+    </div>
+    <p class="section-desc">用 ▲▼ 按鈕把下面 6 個研究設計，由「證據等級最高」排到「證據等級最低」，排好後按「檢查排序」。</p>
+    <div class="pyramid-wrap">
+      <div id="pyramidList"></div>
+      <button class="btn" id="checkPyramidBtn">檢查排序</button>
+      <button class="btn secondary" id="shufflePyramidBtn">重新打亂</button>
+      <div class="callout" id="pyramidResult" style="display:none;"></div>
+    </div>
+  </section>
+
+  <div class="final-score">
+    <div style="font-size:14px;color:var(--muted);font-weight:700;">目前總分</div>
+    <div class="num"><span id="scoreNowBig">0</span> / <span id="scoreMaxBig">34</span></div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <p style="color:var(--muted);font-size:13px;margin-top:14px;">練習過程不會被儲存，重新整理頁面即可重新開始。</p>
+  </div>
+</div>
+
+<div class="footer">實證醫學練習室　｜　台南市立醫院藥劑科　顧宜佳藥師　｜　延伸自簡報《實證醫學》主題二、三</div>
+
+<script>
+let totalScore = 0;
+let maxScore = 34;
+
+function bumpScore(n){
+  totalScore += n;
+  document.getElementById('scoreNow').textContent = totalScore;
+  document.getElementById('scoreNowBig').textContent = totalScore;
+  document.getElementById('scoreMax').textContent = maxScore;
+  document.getElementById('scoreMaxBig').textContent = maxScore;
+  const pct = Math.min(100, Math.round((totalScore/maxScore)*100));
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+/* generic single-select MC renderer.
+   opts: {question, options:[], correct, explain, onCorrect (score awarded once)} */
+function renderMC(container, opts){
+  const block = document.createElement('div');
+  block.className = 'mc-block';
+  const qEl = document.createElement('div');
+  qEl.className = 'mc-q';
+  qEl.textContent = opts.question;
+  block.appendChild(qEl);
+
+  const optWrap = document.createElement('div');
+  optWrap.className = 'mc-options';
+  let answered = false;
+
+  opts.options.forEach(optText => {
+    const b = document.createElement('button');
+    b.className = 'mc-opt';
+    b.type = 'button';
+    b.textContent = optText;
+    b.addEventListener('click', () => {
+      if(answered) return;
+      answered = true;
+      const isCorrect = optText === opts.correct;
+      if(isCorrect){
+        b.classList.add('correct');
+        bumpScore(1);
+      } else {
+        b.classList.add('wrong');
+        Array.from(optWrap.children).forEach(c => {
+          if(c.textContent === opts.correct) c.classList.add('correct');
+        });
+      }
+      Array.from(optWrap.children).forEach(c => c.classList.add('disabled'));
+      explainEl.classList.add('show');
+      if(typeof opts.onAnswered === 'function') opts.onAnswered(isCorrect);
+    });
+    optWrap.appendChild(b);
+  });
+  block.appendChild(optWrap);
+
+  const explainEl = document.createElement('div');
+  explainEl.className = 'mc-explain';
+  explainEl.textContent = '💡 ' + opts.explain;
+  block.appendChild(explainEl);
+
+  container.appendChild(block);
+}
+
+/* ===================== SECTION 1: PICO ===================== */
+
+/* Worked example (Case 1 from the deck) — correct model for P/I/C/O structure */
+const picoDemo = {
+  scenario:'一位 58 歲男性，患有第二型糖尿病已 10 年，目前使用 metformin 及 DPP-4 抑制劑治療，但 HbA1c 仍高達 8.5%。病人同時有心血管疾病病史。本次回診醫師將 DPP-4 抑制劑換成 SGLT2 抑制劑，病人詢問新藥是否更有效。',
+  fields:{
+    P:'患有第二型糖尿病且有心血管疾病病史的成年人',
+    I:'SGLT2 抑制劑',
+    C:'DPP-4 抑制劑',
+    O:'改善血糖控制'
+  },
+  keywordRows:[
+    {tag:'P', nat:'第二型糖尿病、心血管疾病', mesh:'"Diabetes Mellitus, Type 2"[Mesh] AND "Cardiovascular Diseases"[Mesh]'},
+    {tag:'I', nat:'SGLT2 抑制劑', mesh:'"Sodium-Glucose Transporter 2 Inhibitors"[Mesh]'},
+    {tag:'C', nat:'DPP-4 抑制劑', mesh:'"Dipeptidyl-Peptidase IV Inhibitors"[Mesh]'},
+    {tag:'O', nat:'血糖控制', mesh:'"Glycemic Control"[Mesh]'}
+  ],
+  strategy:'("Diabetes Mellitus, Type 2"[Mesh] OR type 2 diabetes) AND ("Cardiovascular Diseases"[Mesh] OR cardiovascular disease) AND ("Sodium-Glucose Transporter 2 Inhibitors"[Mesh] OR SGLT2 inhibitor*) AND ("Dipeptidyl-Peptidase IV Inhibitors"[Mesh] OR DPP-4 inhibitor*) AND ("Glycemic Control"[Mesh] OR HbA1c)',
+  note:'這是治療型問題（RCT），I 與 C 都是「主動介入」（兩種藥物互相比較），所以兩者都要各自轉成 MeSH 詞、寫進搜尋策略。'
+};
+
+const picoColors = {P:'#B03A2E', I:'#2E75B6', C:'#C9791F', O:'#1E8449'};
+
+function renderPicoDemo(){
+  const wrap = document.getElementById('picoDemo');
+  const card = document.createElement('div');
+  card.className = 'demo-card';
+  card.innerHTML =
+    '<span class="demo-tag">✅ 示範參考｜案例一（已在簡報中完整解過，用來對照下面案例二、三該怎麼寫）</span>' +
+    '<h3>案例一｜糖尿病藥物選擇</h3>';
+  const scen = document.createElement('div');
+  scen.className = 'demo-scenario';
+  scen.textContent = '臨床情境：' + picoDemo.scenario;
+  card.appendChild(scen);
+
+  const grid = document.createElement('div');
+  grid.className = 'demo-grid';
+  ['P','I','C','O'].forEach(key => {
+    const labelMap = {P:'P', I:'I', C:'C', O:'O'};
+    const f = document.createElement('div');
+    f.className = 'demo-field';
+    f.innerHTML = '<div class="k">' + labelMap[key] + '</div><div class="v">' + picoDemo.fields[key] + '</div>';
+    grid.appendChild(f);
+  });
+  card.appendChild(grid);
+
+  const kwBox = document.createElement('div');
+  kwBox.className = 'keyword-box';
+  kwBox.innerHTML = '<div class="kw-title">🔍 轉換為可搜尋的關鍵字</div>';
+  picoDemo.keywordRows.forEach(r => {
+    const row = document.createElement('div');
+    row.className = 'kw-row';
+    row.innerHTML = '<span class="kw-tag">' + r.tag + ' 中文描述</span><span class="kw-nat">' + r.nat + '</span><span class="kw-mesh">' + r.mesh + '</span>';
+    kwBox.appendChild(row);
+  });
+  const strat = document.createElement('div');
+  strat.className = 'kw-strategy';
+  strat.textContent = picoDemo.strategy;
+  kwBox.appendChild(strat);
+  const note = document.createElement('div');
+  note.className = 'kw-note';
+  note.textContent = '💡 ' + picoDemo.note;
+  kwBox.appendChild(note);
+  card.appendChild(kwBox);
+
+  wrap.appendChild(card);
+}
+renderPicoDemo();
+
+const picoCases = [
+  {
+    title: '案例二｜慢性腎臟病與血糖控制（預後問題）',
+    scenario: '一位 62 歲女性，診斷為第 4 期慢性腎臟病，合併第二型糖尿病與高血壓，目前 eGFR 為 18 mL/min/1.73 m²，規律於腎臟科門診追蹤。醫師建議增加血糖藥，病人表示不想再增加藥物，若維持目前血糖（HbA1c: 8.5%）會有什麼風險？',
+    pOptions:['第 4 期慢性腎臟病合併第二型糖尿病的成年病人','已經血糖控制不佳（HbA1c 8.5%）的病人','需要加強血糖藥物治療的病人','所有第二型糖尿病病人'],
+    pCorrect:'第 4 期慢性腎臟病合併第二型糖尿病的成年病人',
+    pExplain:'P 要先框出「這個大群體」，不要預設暴露／介入狀態，否則 I 和 C 會失去可比較的母群。',
+    iOptions:['血糖控制不佳／HbA1c 偏高（如 ≥8%）','增加降血糖藥物','停用所有糖尿病用藥','換用 SGLT2 抑制劑'],
+    iCorrect:'血糖控制不佳／HbA1c 偏高（如 ≥8%）',
+    iExplain:'題目問的是「若維持現況」的風險，I 是血糖控制不佳這個預後因子，而不是換藥、加藥等治療選項。',
+    cOptions:['血糖控制良好（如 HbA1c ﹤7%）的病人；預後問題也可不設對照組','使用 DPP-4 抑制劑治療的病人','未患糖尿病的病人','使用胰島素治療的病人'],
+    cCorrect:'血糖控制良好（如 HbA1c ﹤7%）的病人；預後問題也可不設對照組',
+    cExplain:'預後問題本來就不一定需要對照組；若要比較，可設定為血糖控制良好的族群。',
+    oOptions:['慢性腎臟病惡化（如提早進入末期腎病）或心血管事件風險','血糖值本身下降多少','是否需要轉介洗腎中心','藥物副作用發生率'],
+    oCorrect:'慢性腎臟病惡化（如提早進入末期腎病）或心血管事件風險',
+    oExplain:'應選對病人有意義的臨床結果（腎功能惡化、心血管事件），而非僅是血糖數值本身。',
+    typeOptions:['治療 (Therapy)','預後 (Prognosis)','診斷 (Diagnosis)','病因/危害 (Etiology/Harm)'],
+    typeCorrect:'預後 (Prognosis)',
+    typeExplain:'題目問的是「若維持現況會有什麼風險」，是在推估疾病自然病程與未來結果，屬於預後問題。',
+    designOptions:['隨機對照試驗 (RCT)','世代研究 (Cohort)','病例對照研究 (Case-Control)','系統性回顧與統合分析 (SR/MA)'],
+    designCorrect:'世代研究 (Cohort)',
+    designExplain:'預後問題最適合以世代研究追蹤病人一段時間，觀察血糖控制狀態與腎功能結果的關聯。',
+    keywordRows:[
+      {tag:'P', nat:'第4期慢性腎臟病、第二型糖尿病', mesh:'"Diabetes Mellitus, Type 2"[Mesh] AND "Renal Insufficiency, Chronic"[Mesh]'},
+      {tag:'I', nat:'血糖控制不佳、HbA1c', mesh:'"Glycemic Control"[Mesh] OR HbA1c'},
+      {tag:'O', nat:'腎臟病惡化、末期腎病', mesh:'"Disease Progression"[Mesh] OR "Kidney Failure, Chronic"[Mesh]'}
+    ],
+    strategy:'("Diabetes Mellitus, Type 2"[Mesh] AND "Renal Insufficiency, Chronic"[Mesh]) AND ("Glycemic Control"[Mesh] OR HbA1c) AND ("Disease Progression"[Mesh] OR "Kidney Failure, Chronic"[Mesh])',
+    kwNote:'這類預後問題的搜尋策略通常只需要 P + I（暴露／預後因子）+ O 就好；C（對照組）會內含在找到的世代研究裡，不用另外加關鍵字進搜尋策略。'
+  },
+  {
+    title: '案例三｜長期使用 NSAIDs 與中風風險（病因/危害問題）',
+    scenario: '一位 72 歲男性，因膝關節退化性關節炎長期於骨科門診追蹤，過去 6 個月幾乎每天服用 NSAIDs 緩解疼痛。近期病人看到媒體報導提及部分止痛藥可能導致中風感到非常擔心，因此來到藥物諮詢室諮詢。',
+    pOptions:['因退化性關節炎需要止痛藥物治療的成年／高齡病人','長期服用 NSAIDs 的病人','曾經中風的病人','所有服用止痛藥的病人'],
+    pCorrect:'因退化性關節炎需要止痛藥物治療的成年／高齡病人',
+    pExplain:'P 只框「這群病人」，不要先預設他們是否使用了 NSAIDs，這樣才留得住 I／C 兩個可比較的分組。',
+    iOptions:['長期規律使用 NSAIDs','短期偶爾使用 NSAIDs','使用鴉片類止痛藥','接受關節置換手術'],
+    iCorrect:'長期規律使用 NSAIDs',
+    iExplain:'情境明確描述「近 6 個月幾乎每天服用」，對應的正是長期規律使用。',
+    cOptions:['未使用 NSAIDs（或採其他止痛方式，如 acetaminophen）','使用較高劑量 NSAIDs','同時使用 NSAIDs 與類固醇','使用中藥止痛'],
+    cCorrect:'未使用 NSAIDs（或採其他止痛方式，如 acetaminophen）',
+    cExplain:'有暴露就要有對照的「未暴露」組，才能比較兩者的中風風險差異。',
+    oOptions:['中風發生風險','胃腸道出血風險','疼痛緩解程度','藥物交互作用發生率'],
+    oCorrect:'中風發生風險',
+    oExplain:'病人擔心的是媒體報導提到的中風風險，這才是本題真正要問的結果（胃腸道出血雖也是 NSAIDs 常見風險，但不是本題情境問的）。',
+    typeOptions:['治療 (Therapy)','預後 (Prognosis)','診斷 (Diagnosis)','病因/危害 (Etiology/Harm)'],
+    typeCorrect:'病因/危害 (Etiology/Harm)',
+    typeExplain:'題目關心的是「藥物暴露是否會增加疾病風險」，屬於病因／危害問題。',
+    designOptions:['隨機對照試驗 (RCT)','世代研究 (Cohort)','病例對照研究 (Case-Control)','系統性回顧與統合分析 (SR/MA)'],
+    designCorrect:'病例對照研究 (Case-Control)',
+    designExplain:'中風屬於相對少見的結果，病例對照研究（回溯比較中風與未中風病人過去用藥史）執行效率較高；世代研究也可行，但通常需要更大樣本與更長追蹤時間。',
+    keywordRows:[
+      {tag:'P', nat:'退化性關節炎', mesh:'"Osteoarthritis"[Mesh]'},
+      {tag:'I', nat:'非類固醇消炎止痛藥', mesh:'"Anti-Inflammatory Agents, Non-Steroidal"[Mesh] OR NSAID*'},
+      {tag:'O', nat:'中風', mesh:'"Stroke"[Mesh]'}
+    ],
+    strategy:'"Osteoarthritis"[Mesh] AND ("Anti-Inflammatory Agents, Non-Steroidal"[Mesh] OR NSAID*) AND "Stroke"[Mesh]',
+    kwNote:'病因／危害問題同樣只需要 P + I + O；搜尋結果本身就會是「有暴露 vs 無暴露」的比較研究（如病例對照或世代研究），C 不用另外寫進關鍵字。'
+  }
+];
+
+const picoContainer = document.getElementById('picoContainer');
+const picoSubqLabels = {P:'P', I:'I', C:'C', O:'O'};
+
+picoCases.forEach((c, idx) => {
+  const card = document.createElement('div');
+  card.className = 'case-card';
+
+  const h3 = document.createElement('h3');
+  h3.textContent = c.title;
+  card.appendChild(h3);
+
+  const scen = document.createElement('div');
+  scen.className = 'scenario-box';
+  scen.textContent = '臨床情境：' + c.scenario;
+  card.appendChild(scen);
+
+  let answeredCount = 0;
+  const totalSubq = 6;
+  const kwBox = document.createElement('div');
+  kwBox.className = 'keyword-box';
+  kwBox.style.display = 'none';
+
+  function checkUnlock(){
+    answeredCount++;
+    if(answeredCount >= totalSubq && c.keywordRows){
+      kwLocked.style.display = 'none';
+      kwBox.style.display = 'block';
+    }
+  }
+
+  ['P','I','C','O'].forEach(key => {
+    const wrapDiv = document.createElement('div');
+    wrapDiv.className = 'pico-subq';
+    const head = document.createElement('div');
+    head.className = 'subq-head';
+    head.innerHTML = '<span class="tag-badge" style="background:' + picoColors[key] + '">' + picoSubqLabels[key] + '</span><span class="subq-text"></span>';
+    wrapDiv.appendChild(head);
+    card.appendChild(wrapDiv);
+    const questionLabels = {P:'P（Patient/Population）該怎麼描述？', I:'I（Intervention）該怎麼描述？', C:'C（Comparison）該怎麼描述？', O:'O（Outcome）該怎麼描述？'};
+    head.querySelector('.subq-text').textContent = questionLabels[key];
+    renderMC(wrapDiv, {
+      question: '',
+      options: c[key.toLowerCase() + 'Options'],
+      correct: c[key.toLowerCase() + 'Correct'],
+      explain: c[key.toLowerCase() + 'Explain'],
+      onAnswered: checkUnlock
+    });
+    wrapDiv.querySelector('.mc-q').style.display = 'none';
+  });
+
+  renderMC(card, {
+    question: '這是屬於哪一種臨床問題類型？',
+    options: c.typeOptions,
+    correct: c.typeCorrect,
+    explain: c.typeExplain,
+    onAnswered: checkUnlock
+  });
+  renderMC(card, {
+    question: '最適合回答這個問題的研究證據？',
+    options: c.designOptions,
+    correct: c.designCorrect,
+    explain: c.designExplain,
+    onAnswered: checkUnlock
+  });
+
+  const kwLocked = document.createElement('div');
+  kwLocked.className = 'kw-locked';
+  kwLocked.textContent = '🔒 答完上面全部 6 小題後，這裡會解鎖「轉換為搜尋關鍵字」參考';
+  card.appendChild(kwLocked);
+
+  kwBox.innerHTML = '<div class="kw-title">🔍 轉換為可搜尋的關鍵字</div>';
+  if(c.keywordRows){
+    c.keywordRows.forEach(r => {
+      const row = document.createElement('div');
+      row.className = 'kw-row';
+      row.innerHTML = '<span class="kw-tag">' + r.tag + ' 中文描述</span><span class="kw-nat">' + r.nat + '</span><span class="kw-mesh">' + r.mesh + '</span>';
+      kwBox.appendChild(row);
+    });
+    const strat = document.createElement('div');
+    strat.className = 'kw-strategy';
+    strat.textContent = c.strategy;
+    kwBox.appendChild(strat);
+    if(c.kwNote){
+      const note = document.createElement('div');
+      note.className = 'kw-note';
+      note.textContent = '💡 ' + c.kwNote;
+      kwBox.appendChild(note);
+    }
+  }
+  card.appendChild(kwBox);
+
+  picoContainer.appendChild(card);
+});
+
+/* ===================== SECTION 2: MeSH ===================== */
+const meshQuestions = [
+  {
+    q:'想找所有「NSAIDs」相關文獻，但文獻可能只寫個別藥名（如 ibuprofen、naproxen），這時候用 MeSH 的什麼功能最有效？',
+    options:['Explode（展開）','Major Topic（主要主題）','自然語言搜尋','布林邏輯 AND'],
+    correct:'Explode（展開）',
+    explain:'Explode 會自動包含該詞彙下所有下位詞的文獻，例如搜尋「NSAIDs」可自動涵蓋 ibuprofen、naproxen 等個別藥物。'
+  },
+  {
+    q:'案例一以 MeSH 搜尋 SGLT2 抑制劑相關文獻，結果比自然語言搜尋少很多（7 筆 vs 64 筆），這代表？',
+    options:['MeSH 搜尋找得比較「準」但可能較不「全」','MeSH 搜尋一定比較差，不該使用','應該只用 MeSH 搜尋就好','自然語言搜尋比較精準'],
+    correct:'MeSH 搜尋找得比較「準」但可能較不「全」',
+    explain:'MeSH 搜尋精準但可能漏掉尚未被索引標記的新文獻；建議 MeSH ＋ 自然語言並用（OR 連接），兼顧精準與完整。'
+  },
+  {
+    q:'PubMed 使用的控制詞彙系統叫什麼？',
+    options:['Emtree','MeSH','SNOMED CT','ICD-10'],
+    correct:'MeSH',
+    explain:'MeSH（Medical Subject Headings，醫學主題詞表）是 PubMed／MEDLINE 使用的控制詞彙系統。'
+  },
+  {
+    q:'你在 PubMed 搜尋「糖尿病」，跑出好幾百篇文獻，但點進去一看，很多篇只是在案例報告裡「順便提到病人有糖尿病史」，文章真正討論的其實是別的疾病。想只保留「糖尿病本身就是文章主要討論主題」的文獻，該勾選 MeSH 的什麼功能？',
+    options:['Explode（展開）','Major Topic（主要主題）','Automatic Term Mapping','Truncation（截字）'],
+    correct:'Major Topic（主要主題）',
+    explain:'勾選 Major Topic 後，只會找出「這個 MeSH 詞是文章核心主題」的文獻，過濾掉只是順帶提及、附帶背景資訊的文章，是縮小結果、提高精準度最常用的技巧之一——在 PubMed 的 MeSH Database 介面裡，它跟 Explode 是並列的兩個勾選框，屬於基本必學技能。'
+  }
+];
+const meshContainer = document.getElementById('meshContainer');
+meshQuestions.forEach((item, i) => {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  const title = document.createElement('div');
+  title.className = 'q-title';
+  title.innerHTML = '<span class="q-num">' + (i+1) + '</span>' + item.q;
+  card.appendChild(title);
+  renderMC(card, { question:'', options:item.options, correct:item.correct, explain:item.explain });
+  card.querySelector('.mc-q').style.display = 'none';
+  meshContainer.appendChild(card);
+});
+
+/* ===================== SECTION 3: Boolean logic ===================== */
+const boolQuestions = [
+  {
+    q:'想找「同時」討論糖尿病和運動的文獻，該用哪個邏輯運算子？',
+    options:['AND','OR','NOT','（）'],
+    correct:'AND',
+    explain:'AND（交集）會找出同時包含所有關鍵字的文獻，例如 diabetes AND exercise。'
+  },
+  {
+    q:'想找包含「高血壓」或「血壓高」任一詞的文獻，該用？',
+    options:['AND','OR','NOT','＊'],
+    correct:'OR',
+    explain:'OR（聯集）會找出包含任一關鍵字的文獻，適合合併同義詞，例如 hypertension OR "high blood pressure"。'
+  },
+  {
+    q:'想排除「個案報告」類型的文獻，該用？',
+    options:['AND','OR','NOT','Explode'],
+    correct:'NOT',
+    explain:'NOT（差集）用於排除特定關鍵字，例如 "breast cancer" NOT "case report"。'
+  },
+  {
+    q:'想搜尋 Pharmacy、Pharmacist 等字根相同的詞，該用哪個符號？',
+    options:['雙引號 " "','星號 ＊（切截符號）','中括號 [ ]','小括號 ( )'],
+    correct:'星號 ＊（切截符號）',
+    explain:'星號（＊）是切截符號，例如輸入 Pharmac＊ 可搜尋到 Pharmacy、Pharmacist 等字根相同的變體詞。'
+  },
+  {
+    q:'想精準搜尋特定專有名詞如 "high blood pressure"，避免單字被拆開檢索，該用？',
+    options:['雙引號 " "（片語搜尋）','星號 ＊','NOT','AND'],
+    correct:'雙引號 " "（片語搜尋）',
+    explain:'雙引號用於片語搜尋，確保多個字被視為一個完整詞組，而不是被拆開分別檢索。'
+  },
+  {
+    q:'以下哪個搜尋策略邏輯正確，能找到「老年人糖尿病與運動」相關文獻？',
+    options:[
+      'diabetes OR exercise AND elderly',
+      '(diabetes OR "diabetes mellitus") AND (exercise OR "physical activity") AND elderly',
+      'diabetes NOT exercise NOT elderly',
+      'diabetes AND OR exercise'
+    ],
+    correct:'(diabetes OR "diabetes mellitus") AND (exercise OR "physical activity") AND elderly',
+    explain:'善用括號確保邏輯順序：先用 OR 合併同義詞，再用 AND 串接不同 PICO 元素，才能得到邏輯正確又完整的搜尋策略。'
+  }
+];
+const boolContainer = document.getElementById('boolContainer');
+boolQuestions.forEach((item, i) => {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  const title = document.createElement('div');
+  title.className = 'q-title';
+  title.innerHTML = '<span class="q-num">' + (i+1) + '</span>' + item.q;
+  card.appendChild(title);
+  renderMC(card, { question:'', options:item.options, correct:item.correct, explain:item.explain });
+  card.querySelector('.mc-q').style.display = 'none';
+  boolContainer.appendChild(card);
+});
+
+/* ===================== SECTION 4: Study design matching ===================== */
+const designOpts4 = ['隨機對照試驗 (RCT)','世代研究 (Cohort)','病例對照研究 (Case-Control)','系統性回顧與統合分析 (SR/MA)'];
+const designQuestions = [
+  {
+    q:'研究者想知道 SGLT2 抑制劑是否能降低糖尿病患者的心血管事件，將受試者「隨機」分派到藥物組與安慰劑組，前瞻性追蹤 5 年後比較結果。',
+    correct:'隨機對照試驗 (RCT)',
+    explain:'有「隨機分派」是 RCT 最關鍵的特徵，能有效平衡已知與未知的干擾因子。'
+  },
+  {
+    q:'研究者追蹤 1000 位長期使用 NSAIDs 與 1000 位未使用 NSAIDs 的骨關節炎病人 5 年，比較兩組日後的中風發生率。',
+    correct:'世代研究 (Cohort)',
+    explain:'依「是否暴露」（有無使用 NSAIDs）分組並前瞻性追蹤比較結果發生率，是典型的世代研究設計。'
+  },
+  {
+    q:'研究者收集 100 位中風病人與 100 位未中風病人，回溯調查兩組病人過去的 NSAIDs 使用情形。',
+    correct:'病例對照研究 (Case-Control)',
+    explain:'從「已發生結果」（中風與否）出發，回溯比較過去暴露史，是病例對照研究的典型設計，特別適合中風這類相對少見的結果。'
+  },
+  {
+    q:'研究者系統性檢索所有 SGLT2 抑制劑相關的 RCT，並以統計方法合併分析其心血管保護效果。',
+    correct:'系統性回顧與統合分析 (SR/MA)',
+    explain:'系統性檢索、篩選多篇研究，並用統計方法合併多篇研究數據得出綜合效果量，正是 SR/MA 的定義。'
+  },
+  {
+    q:'研究者想探討某種非常罕見的疾病與特定藥物暴露的關聯，且希望能快速、低成本完成研究。',
+    correct:'病例對照研究 (Case-Control)',
+    explain:'罕見疾病適合先找出已發生疾病的病例，再回溯比較暴露史，執行效率遠高於前瞻性世代研究或 RCT。'
+  },
+  {
+    q:'某藥物已累積多篇 RCT，但各篇結果不太一致，研究者想整合所有證據以得出更精確、更有power的結論。',
+    correct:'系統性回顧與統合分析 (SR/MA)',
+    explain:'當已有多篇相關研究但結果不一致時，SR/MA 能整合樣本數、提高統計檢定力，是解決研究間分歧最合適的設計。'
+  }
+];
+const designContainer = document.getElementById('designContainer');
+designQuestions.forEach((item, i) => {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  const title = document.createElement('div');
+  title.className = 'q-title';
+  title.innerHTML = '<span class="q-num">' + (i+1) + '</span>' + item.q;
+  card.appendChild(title);
+  renderMC(card, { question:'', options:designOpts4, correct:item.correct, explain:item.explain });
+  card.querySelector('.mc-q').style.display = 'none';
+  designContainer.appendChild(card);
+});
+
+/* ===================== SECTION 5: Pyramid ranking ===================== */
+const correctPyramid = [
+  '系統性回顧與統合分析 (SR/MA)',
+  '隨機對照試驗 (RCT)',
+  '世代研究 (Cohort Study)',
+  '病例對照研究 (Case-Control)',
+  '個案報告／個案系列報告',
+  '專家意見／動物試驗／細胞試驗'
+];
+let pyramidState = [];
+
+function shuffleArray(arr){
+  const a = arr.slice();
+  for(let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function renderPyramid(){
+  const list = document.getElementById('pyramidList');
+  list.innerHTML = '';
+  document.getElementById('pyramidResult').style.display = 'none';
+  pyramidState.forEach((label, idx) => {
+    const row = document.createElement('div');
+    row.className = 'pyramid-item';
+    const left = document.createElement('div');
+    left.className = 'label-wrap';
+    left.innerHTML = '<span class="rank">' + (idx+1) + '</span>' + label;
+    row.appendChild(left);
+    const btns = document.createElement('div');
+    btns.className = 'pyramid-btns';
+    const up = document.createElement('button');
+    up.type = 'button'; up.textContent = '▲';
+    up.addEventListener('click', () => {
+      if(idx > 0){
+        [pyramidState[idx-1], pyramidState[idx]] = [pyramidState[idx], pyramidState[idx-1]];
+        renderPyramid();
+      }
+    });
+    const down = document.createElement('button');
+    down.type = 'button'; down.textContent = '▼';
+    down.style.marginLeft = '6px';
+    down.addEventListener('click', () => {
+      if(idx < pyramidState.length - 1){
+        [pyramidState[idx+1], pyramidState[idx]] = [pyramidState[idx], pyramidState[idx+1]];
+        renderPyramid();
+      }
+    });
+    btns.appendChild(up);
+    btns.appendChild(down);
+    row.appendChild(btns);
+    list.appendChild(row);
+  });
+}
+
+let pyramidScored = false;
+document.getElementById('checkPyramidBtn').addEventListener('click', () => {
+  const rows = document.querySelectorAll('#pyramidList .pyramid-item');
+  let correctCount = 0;
+  rows.forEach((row, idx) => {
+    row.classList.remove('correct','wrong');
+    if(pyramidState[idx] === correctPyramid[idx]){
+      row.classList.add('correct');
+      correctCount++;
+    } else {
+      row.classList.add('wrong');
+    }
+  });
+  const resultEl = document.getElementById('pyramidResult');
+  resultEl.style.display = 'block';
+  resultEl.textContent = '💡 你答對了 ' + correctCount + ' / 6 個位置！' + (correctCount === 6 ? ' 全部正確，太厲害了！' : ' 綠色代表位置正確，紅色代表需要調整，再試試看～');
+  if(!pyramidScored){
+    pyramidScored = true;
+    bumpScore(correctCount);
+  }
+});
+
+document.getElementById('shufflePyramidBtn').addEventListener('click', () => {
+  pyramidState = shuffleArray(correctPyramid);
+  pyramidScored = false;
+  renderPyramid();
+});
+
+pyramidState = shuffleArray(correctPyramid);
+renderPyramid();
+bumpScore(0);
+</script>
+</body>
+</html>
