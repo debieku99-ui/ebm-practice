@@ -394,9 +394,9 @@ const picoCases = [
     keywordRows:[
       {tag:'P', nat:'懷孕', mesh:'"Pregnancy"[Mesh] OR pregnancy'},
       {tag:'I', nat:'Zolpidem', mesh:'"Zolpidem"[Mesh] OR zolpidem'},
-      {tag:'O', nat:'出生缺陷', mesh:'"Abnormalities, Drug-Induced"[Mesh] OR "Congenital Abnormalities"[Mesh] OR birth defects OR malformations'}
+      {tag:'O', nat:'出生缺陷', mesh:'"Congenital Abnormalities"[Mesh] OR birth defects'}
     ],
-    strategy:'("Pregnancy"[Mesh] OR pregnancy) AND ("Zolpidem"[Mesh] OR zolpidem) AND ("Abnormalities, Drug-Induced"[Mesh] OR "Congenital Abnormalities"[Mesh] OR birth defects OR malformations)',
+    strategy:'("Pregnancy"[Mesh] OR pregnancy) AND ("Zolpidem"[Mesh] OR zolpidem) AND ("Congenital Abnormalities"[Mesh] OR birth defects)',
     kwNote:'① 搜尋結果約 8 筆。結果不多，不需要用 [Majr]，用了反而會漏掉文獻。② 篩選近 10 年：3 筆。③ 選一篇能回答這個臨床問題的文獻，閱讀摘要後，寫一段回答病人的話，連同文獻篇名貼到簡報。例如：「研究顯示，懷孕前三個月使用〇〇，寶寶發生△△的風險和沒有使用的孕婦相比……，建議您……，並在產檢時……。」'
   }
 ];
