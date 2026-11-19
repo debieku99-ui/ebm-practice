@@ -365,9 +365,9 @@ const picoCases = [
     keywordRows:[
       {tag:'P', nat:'心房顫動', mesh:'"Atrial Fibrillation"[Majr]'},
       {tag:'I', nat:'非類固醇消炎止痛藥', mesh:'"Anti-Inflammatory Agents, Non-Steroidal"[Majr]'},
-      {tag:'O', nat:'出血', mesh:'bleeding'}
+      {tag:'O', nat:'出血', mesh:'"Hemorrhage"[Mesh] OR bleeding'}
     ],
-    strategy:'"Atrial Fibrillation"[Majr] AND "Anti-Inflammatory Agents, Non-Steroidal"[Majr] AND bleeding',
+    strategy:'"Atrial Fibrillation"[Majr] AND "Anti-Inflammatory Agents, Non-Steroidal"[Majr] AND ("Hemorrhage"[Mesh] OR bleeding)',
     kwNote:'① P、I 用 [Majr]（限定是文章的主要主題）：18 筆。② 篩選近 5 年：3 筆。③ 選一篇能回答這個臨床問題的文獻，閱讀摘要後，寫一段回答病人的話，連同文獻篇名貼到簡報。例如：「研究顯示，服用抗凝血劑的人如果同時使用〇〇，出血風險約增加 X 倍，建議您……；如果出現……，請儘快回診。」'
   },
   {
@@ -511,9 +511,9 @@ const meshQuestions = [
   },
   {
     q:'你在 PubMed 搜尋「糖尿病」，跑出好幾百篇文獻，但點進去一看，很多篇只是在案例報告裡「順便提到病人有糖尿病史」，文章真正討論的其實是別的疾病。想只保留「糖尿病本身就是文章主要討論主題」的文獻，該勾選 MeSH 的什麼功能？',
-    options:['Explode（展開）','Major Topic（主要主題）','Automatic Term Mapping','Truncation（截字）'],
+    options:['Explode（展開）','Major Topic（主要主題）','No Explode（不展開）','布林 NOT'],
     correct:'Major Topic（主要主題）',
-    explain:'勾選 Major Topic 後，只會找出「這個 MeSH 詞是文章核心主題」的文獻，過濾掉只是順帶提及、附帶背景資訊的文章，是縮小結果、提高精準度最常用的技巧之一——在 PubMed 的 MeSH Database 介面裡，它跟 Explode 是並列的兩個勾選框，屬於基本必學技能。'
+    explain:'勾選 Major Topic 後，只會找出「這個 MeSH 詞是文章核心主題」的文獻，過濾掉只是順帶提及的文章。'
   }
 ];
 const meshContainer = document.getElementById('meshContainer');
@@ -552,13 +552,13 @@ const boolQuestions = [
   {
     q:'想找「糖尿病或高血壓」且與「運動」相關的文獻，哪個寫法正確？',
     options:[
-      'diabetes OR hypertension AND exercise',
+      'exercise AND diabetes OR hypertension',
       '(diabetes OR hypertension) AND exercise',
       'diabetes AND hypertension AND exercise',
       'diabetes NOT hypertension AND exercise'
     ],
     correct:'(diabetes OR hypertension) AND exercise',
-    explain:'沒有括號時，PubMed 由左至右依序處理，結果可能不是你要的組合。用括號先把並列的詞 OR 起來，再用 AND 串接。'
+    explain:'沒有括號時，PubMed 由左至右依序處理：exercise AND diabetes OR hypertension 會變成 (exercise AND diabetes) OR hypertension，混進所有高血壓的文獻。用括號先把並列的詞 OR 起來，再用 AND 串接。'
   },
   {
     q:'以下哪個搜尋策略邏輯正確，能找到「老年人糖尿病與運動」相關文獻？',
